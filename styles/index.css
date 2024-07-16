@@ -1,0 +1,98 @@
+.images-viewer {
+    display: flex;
+    align-self: stretch;
+    gap: 1.25rem;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.images-viewer__list {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03),
+        0px 20px 24px -4px rgba(16, 24, 40, 0.08);
+}
+
+.images-viewer__list__container {
+    display: fixed;
+    top: 0;
+    bottom: 0;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px 0;
+    margin: 5px;
+    width: 300px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0px;
+    overflow-y: auto;
+}
+
+.images-viewer__list__container ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.images-viewer__list__container ul>li {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.images-viewer__list__container ul>li:hover {
+    background-color: var(--second-color);
+    color: var(--fourth-color);
+}
+
+.images-viewer__container {
+    margin-left: 330px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    height: 100vh;
+}
+
+.images-viewer__container__viewer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    max-height: 80%;
+    /* Start with a zero height to maintain aspect ratio */
+    padding-bottom: 100%;
+    /* Set padding bottom to maintain the aspect ratio (height / width * 100) */
+    position: relative;
+    /* Ensure proper positioning of child elements */
+    overflow: hidden;
+    /* Hide any overflow if the image is larger */
+    ;
+}
+
+.images-viewer__container__viewer img {
+    position: absolute;
+    /* Position the image absolutely within its container */
+    width: 100%;
+    /* Allow the image to adjust its width while maintaining aspect ratio */
+    height: auto;
+    /* Allow the image to adjust its height while maintaining aspect ratio */
+    max-width: 100%;
+    /* Ensure the image does not exceed the container's width */
+    max-height: 100%;
+}
