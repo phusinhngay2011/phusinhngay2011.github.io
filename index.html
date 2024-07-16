@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="styles/index.css" />
   <link rel="stylesheet" href="styles/button.css" />
   <link rel="stylesheet" href="styles/button2.css" />
+  <link rel="stylesheet" href="styles/loader.css" />
 
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -64,7 +65,8 @@
     <div class="images-viewer__container">
       <div class="images-viewer__container__viewer">
         <div class="images-viewer__container__viewer__img-container">
-          <img id="imageDisplay" src="" alt="Selected Image" />
+          <img id="imageDisplay" src="" alt="Selected Image" loading="lazy" />
+          <div class="loader" id="loadingSpinner"></div>
         </div>
 
         <div class="images-viewer__container__viewer__controls">
@@ -97,6 +99,7 @@
     </div>
   </div>
 </body>
-<script src="script.js"></script>
+<script src="scripts/image.js"></script>
+<script src="scripts/index.js"></script>
 
 </html>
