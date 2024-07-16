@@ -105,7 +105,7 @@ function loadFileList() {
 
 // Function to display the selected image
 function displayImage(filename) {
-    const imagePath = `./assets/images/bones/visualize-bone/${filename}`;
+    const imagePath = `./assets/images/Bones/visualize-bone/${filename}`;
     imageDisplayElem.src = imagePath;
     selectedImage = filename;
     highlightSelectedImage(filename);
