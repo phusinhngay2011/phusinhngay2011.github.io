@@ -132,7 +132,9 @@ table {
 a {
     text-decoration: none;
 }
-
+* {
+    box-sizing: border-box;
+}
 /* Global scrollbar width and height */
 ::-webkit-scrollbar {
     width: .875rem;

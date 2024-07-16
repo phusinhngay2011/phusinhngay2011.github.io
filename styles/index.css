@@ -16,7 +16,7 @@
 
 .images-viewer__list {
     position: absolute;
-    bottom: 0;
+    bottom: 5%;
     top: 0;
     display: flex;
     flex-direction: column;
@@ -24,9 +24,13 @@
     height: auto;
     box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03),
         0px 20px 24px -4px rgba(16, 24, 40, 0.08);
+    border: 1px solid var(--second-color);
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding: 6px 12px;
 }
 
-.images-viewer__list__statistic{
+.images-viewer__list__statistic {
     display: flex;
     align-self: stretch;
     flex-direction: column;
@@ -34,9 +38,11 @@
     margin: 16px 0;
     gap: .375rem;
 }
-.images-viewer__list__statistic span{
+
+.images-viewer__list__statistic span {
     font-size: 16px;
 }
+
 .images-viewer__list__container {
     display: fixed;
     top: 0;
@@ -65,6 +71,8 @@
 .images-viewer__list__container ul>li {
     height: 44px;
     padding: 10px 15px;
+    font-size: large;
+    font-weight: 500;
     cursor: pointer;
     border-radius: 6px;
     transition: all 0.2s ease-in-out;
@@ -73,7 +81,7 @@
     justify-items: flex-end;
 }
 
-li svg{
+li svg {
     display: flex;
     align-self: flex-end;
     margin-left: auto;
@@ -90,7 +98,7 @@ li svg{
 }
 
 .images-viewer__container {
-    margin-left: 330px;
+    margin-left: 350px;
     margin-right: 30px;
     display: flex;
     flex-direction: column;
@@ -120,17 +128,70 @@ li svg{
     overflow: hidden;
     padding: 0 16px;
     border-radius: 6px;
+    overflow: hidden;
+    cursor: grab;
+}
+
+.img-zoom-lens {
+    position: absolute;
+    /*set the size of the lens:*/
+    width: 40px;
+    height: 40px;
+    z-index: 10;
+
+}
+
+.img-zoom-result {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px !important;
+    height: 300px !important;
+    border: 1px solid var(--fourth-color);
+    border-bottom-right-radius: 6px;
+    z-index: 10;
+    display: none;
 }
 
 .images-viewer__container__viewer__img-container img {
+    display: block;
     position: absolute;
     top: 0;
-    /* Position the image absolutely within its container */
     width: auto;
-    /* Allow the image to adjust its width while maintaining aspect ratio */
     height: 100%;
     object-fit: contain;
     object-position: center;
+    max-width: none;
+    transition: transform 0.3s ease;
+    user-select: none;
+    cursor: zoom-in;
+}
+
+.images-viewer__container__viewer__img-container img:active {
+    cursor: grabbing;
+    /* Change cursor when dragging */
+}
+
+.images-viewer__container__viewer__img-container__controller {
+    display: flex;
+    gap: 16px;
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 8px;
+    background: var(--second-color);
+    border-bottom-left-radius: 6px;
+    opacity: 0.75;
+    transition: all 0.2s ease-in-out;
+}
+
+.images-viewer__container__viewer__img-container__controller:hover {
+    opacity: 1;
+}
+
+.images-viewer__container__viewer__img-container__controller svg {
+    cursor: pointer;
 }
 
 .images-viewer__container__viewer__controls {
