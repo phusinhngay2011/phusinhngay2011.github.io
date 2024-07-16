@@ -142,14 +142,14 @@ li svg {
 }
 
 .img-zoom-result {
-    position: absolute;
+    position: fixed !important;
     top: 0;
     left: 0;
-    width: 300px !important;
-    height: 300px !important;
+    width: 340px !important;
+    height: 340px !important;
     border: 1px solid var(--fourth-color);
     border-bottom-right-radius: 6px;
-    z-index: 10;
+    z-index: 1000;
     display: none;
 }
 

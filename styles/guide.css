@@ -9,7 +9,7 @@
 .guide {
     display: flex;
     width: 350px;
-    height: 70%;
+    max-height: 70%;
     padding: 16px;
     flex-direction: column;
     border-radius: 6px;

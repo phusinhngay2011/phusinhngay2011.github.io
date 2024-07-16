@@ -221,7 +221,7 @@ function resetEvaluations() {
 
 function imageZoom(imgID, resultID) {
     var img, lens, result, cx, cy;
-    
+
     result = document.getElementById(resultID);
     /*create lens:*/
     lens = document.createElement("div");
@@ -231,7 +231,7 @@ function imageZoom(imgID, resultID) {
     /*calculate the ratio between result DIV and lens:*/
     cx = result.offsetWidth / lens.offsetWidth;
     cy = result.offsetHeight / lens.offsetHeight;
-    
+
     /*set background properties for the result DIV:*/
     /*execute a function when someone moves the cursor over the image, or the lens:*/
     lens.addEventListener("mousemove", moveLens);
@@ -239,6 +239,15 @@ function imageZoom(imgID, resultID) {
     /*and also for touch screens:*/
     lens.addEventListener("touchmove", moveLens);
     imageDisplayElem.addEventListener("touchmove", moveLens);
+
+    imageDisplayElem.addEventListener("mouseenter", () => {
+        document.getElementById('myresult').style.display = 'block';
+        console.log('in');
+    });
+    imageDisplayElem.addEventListener("mouseleave", () => {
+        document.getElementById('myresult').style.display = 'none';
+        console.log('out');
+    });
 
     function moveLens(e) {
         var pos, x, y;
