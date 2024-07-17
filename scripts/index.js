@@ -112,7 +112,7 @@ function loadFileList() {
     fetch(imagesJsonPath)
         .then((response) => response.json())
         .then((data) => {
-            data.images.forEach((filename) => {
+            data.images.forEach((filename, idx) => {
                 images.push(filename);
                 if (!selectedImage) {
                     selectedImage = filename;

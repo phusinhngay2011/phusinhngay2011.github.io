@@ -91,56 +91,61 @@
 
           <div class="image-wrapper" id="imageWrapper">
             <img id="imageDisplay" src="" alt="Selected Image" style="display: none;" />
-            <div class="svg-container" id="svgContainer"></div> <!-- Container for SVG elements -->
           </div>
           <div id="loader" class="loader"></div>
           <img id="myresult" class="img-zoom-result" />
         </div>
 
-        <div class="images-viewer__container__viewer__controls">
-          <div style="display: flex; align-items: stretch; gap: .375rem;">
-            <button class="button tooltip" role="button" id="goToFirstImage">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 7H14C17.3137 7 20 9.68629 20 13C20 16.3137 17.3137 19 14 19H4M4 7L8 3M4 7L8 11"
-                  stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              </svg><span class="tooltiptext">Đến ảnh đầu tiên</span>
-            </button>
-            <button class="button" role="button" id="prevImageBtn">
-              Ảnh trước
-            </button>
+        <div class="controller">
+          <div class="images-viewer__container__viewer__controls">
+
+
+
           </div>
 
-          <div style="display: flex; align-items: stretch; gap: .375rem;">
-            <button class="button" role="button" id="nextImageBtn">
-              Ảnh sau
-            </button>
+          <div class="images-viewer__container__viewer__verify">
+            <div style="display: flex; align-items: stretch; gap: .375rem; align-self: flex-start; margin-right: auto;">
+              <button class="button tooltip" role="button" id="goToFirstImage">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 7H14C17.3137 7 20 9.68629 20 13C20 16.3137 17.3137 19 14 19H4M4 7L8 3M4 7L8 11"
+                    stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg><span class="tooltiptext">Đến ảnh đầu tiên</span>
+              </button>
+              <button class="button" role="button" id="prevImageBtn">
+                Ảnh trước
+              </button>
+            </div>
 
-            <button class="button tooltip" role="button" id="goToLastImage">
+            <button class="button button-false" role="button" id="falseBtn">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 7H10C6.68629 7 4 9.68629 4 13C4 16.3137 6.68629 19 10 19H20M20 7L16 3M20 7L16 11"
-                  stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M17 7L7 17M7 7L17 17" stroke="white" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
               </svg>
-              <span class="tooltiptext">Đến ảnh cuối cùng</span>
+
+              <span>Sai</span>
             </button>
+            <button class="button button-true" role="button" id="trueBtn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              <span>Đúng</span>
+            </button>
+
+            <div style="display: flex; align-items: stretch; gap: .375rem; align-self: flex-end; margin-left: auto;">
+              <button class="button" role="button" id="nextImageBtn">
+                Ảnh sau
+              </button>
+
+              <button class="button tooltip" role="button" id="goToLastImage">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 7H10C6.68629 7 4 9.68629 4 13C4 16.3137 6.68629 19 10 19H20M20 7L16 3M20 7L16 11"
+                    stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span class="tooltiptext">Đến ảnh cuối cùng</span>
+              </button>
+            </div>
           </div>
-        </div>
-
-        <div class="images-viewer__container__viewer__verify">
-          <button class="button button-false" role="button" id="falseBtn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M17 7L7 17M7 7L17 17" stroke="white" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-
-            <span>Sai</span>
-          </button>
-          <button class="button button-true" role="button" id="trueBtn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-            <span>Đúng</span>
-          </button>
         </div>
       </div>
     </div>
