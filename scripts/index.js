@@ -21,17 +21,20 @@ const trueCountElem = document.getElementById("trueCount");
 const falseCountElem = document.getElementById("falseCount");
 const unEvaluatedCountElem = document.getElementById("unEvaluatedCount");
 
-const editBtnElem = document.getElementById("edit");
-const eraseBtnElem = document.getElementById("erase");
+const editBtnElem = document.getElementById("editButton");
+const eraseBtnElem = document.getElementById("eraseButton");
 
 var images = [];
+var imagesWithInfo = [];
 var selectedImage = "";
 var evaluations = {}; // Object to store evaluations
-var evaluations = {}; // Object to store evaluations
+var isEditing = false;
+var svgContainer = document.getElementById("canvas");
+var temporaryPolygon = { all_vertex_x: [], all_vertex_y: [] };
 
 // Load evaluations from localStorage
 function loadEvaluations() {
-    const savedEvaluations = localStorage.getItem("evaluations");
+    const savedEvaluations = localStorage.getItem("evaluations-updated");
     if (savedEvaluations) {
         evaluations = JSON.parse(savedEvaluations);
     }
@@ -39,12 +42,15 @@ function loadEvaluations() {
 
 // Save evaluations to localStorage
 function saveEvaluations() {
-    localStorage.setItem("evaluations", JSON.stringify(evaluations));
+    localStorage.setItem("evaluations-updated", JSON.stringify(evaluations));
 }
 
 // Function to handle evaluation buttons
 function evaluateImage(evaluation) {
-    evaluations[selectedImage] = evaluation;
+    evaluations[selectedImage] = {
+        ...evaluations[selectedImage],
+        good: evaluation
+    };
     // highlightSelectedImage(selectedImage);
     highlightEvaluatedImage(selectedImage, evaluation);
     updateCounts();
@@ -107,22 +113,27 @@ function handleKeyDown(event) {
     }
 }
 
-// Function to load the list of filenames
+// Function to load the list of filenames and real sizes
 function loadFileList() {
     fetch(imagesJsonPath)
         .then((response) => response.json())
         .then((data) => {
-            data.images.forEach((filename, idx) => {
+            data.images.forEach((imageData, idx) => {
+                const { filename, width, height } = imageData;
+                imagesWithInfo.push({ filename, width, height }); // Store filename, width, and height
                 images.push(filename);
+
                 if (!selectedImage) {
                     selectedImage = filename;
                 }
+                console.log(selectedImage);
                 const listItem = document.createElement("li");
                 listItem.textContent = filename;
                 listItem.id = `img-${filename}`;
                 listItem.addEventListener("click", () => displayImage(filename));
                 fileListElem.appendChild(listItem);
             });
+
             updateNumberOfImages(); // Update number of images after loading
             updateEvaluationsIcons();
             displayImage(selectedImage);
@@ -131,13 +142,6 @@ function loadFileList() {
         .catch((error) => console.error("Error loading images:", error));
 }
 
-// Function to display the selected image
-function displayImage(filename) {
-    const imagePath = `./assets/images/Bones/visualize-bone/${filename}`;
-    imageDisplayElem.src = imagePath;
-    selectedImage = filename;
-    highlightSelectedImage(filename);
-}
 
 // Function to highlight the selected image in the list
 function highlightSelectedImage(filename) {
@@ -189,11 +193,14 @@ function updateEvaluationsIcons() {
     listItems.forEach((item) => {
         const filename = item.textContent.trim();
         item.innerHTML = filename; // Reset innerHTML to remove old icons
-        if (evaluations[filename] === "True") {
-            item.appendChild(createTrueSVG());
-        } else if (evaluations[filename] === "False") {
-            item.appendChild(createFalseSVG());
+        if (evaluations[filename] && evaluations[filename].good) {
+            if (evaluations[filename].good === "True") {
+                item.appendChild(createTrueSVG());
+            } else if (evaluations[filename].good === "False") {
+                item.appendChild(createFalseSVG());
+            }
         }
+
     });
 }
 
@@ -221,8 +228,8 @@ function highlightEvaluatedImage(filename, evaluation) {
 
 
 function updateCounts() {
-    const trueCount = Object.values(evaluations).filter(value => value === "True").length;
-    const falseCount = Object.values(evaluations).filter(value => value === "False").length;
+    const trueCount = Object.values(evaluations).filter(value => value.good === "True").length;
+    const falseCount = Object.values(evaluations).filter(value => value.good === "False").length;
     const unEvaluatedCount = images.length - trueCount - falseCount;
 
     trueCountElem.textContent = `Số ảnh đúng: ${trueCount}`;
@@ -234,6 +241,7 @@ function updateCounts() {
 function resetEvaluations() {
     if (confirm("Bác sĩ có muốn xóa bỏ hết các đánh giá không?")) {
         evaluations = {};
+        clearPolygons();
         saveEvaluations();
         updateEvaluationsIcons();
         updateCounts();
@@ -316,10 +324,207 @@ function imageZoom(imgID, resultID) {
     }
 }
 
+
+// Add event listeners
+document.getElementById('editButton').addEventListener('click', function () {
+    toggleEditing();
+});
+
+document.getElementById('eraseButton').addEventListener('click', function () {
+    clearPolygons();
+    exitEditingMode();
+});
+
+svgContainer.addEventListener('click', function (event) {
+    if (isEditing) {
+        addPoint(event);
+    }
+});
+
+document.addEventListener('keydown', function (event) {
+    if (isEditing) {
+        if (event.key === 'Enter') {
+            savePolygon();
+            saveEvaluations();
+            toggleEditing();
+        } else if (event.key === 'Escape') {
+            cancelEditing();
+            toggleEditing();
+        }
+    }
+});
+
+function toggleEditing() {
+    isEditing = !isEditing;
+    const editButton = document.getElementById('editButton');
+    if (isEditing) {
+        editButton.classList.add('editing');
+        temporaryPolygon = evaluations[selectedImage]?.polygon
+            ? { ...evaluations[selectedImage].polygon }
+            : { all_vertex_x: [], all_vertex_y: [] }; // Load existing polygon or create new
+        enableDrawing();
+    } else {
+        editButton.classList.remove('editing');
+        disableDrawing();
+    }
+}
+
+function enableDrawing() {
+    svgContainer.classList.remove('hidden');
+    drawPolygon();
+}
+
+function disableDrawing() {
+    svgContainer.classList.add('hidden');
+    drawPolygon();
+}
+
+function clearPolygons() {
+    while (svgContainer.firstChild) {
+        svgContainer.removeChild(svgContainer.firstChild);
+    }
+    if (evaluations[selectedImage]) {
+        evaluations[selectedImage].polygon = { all_vertex_x: [], all_vertex_y: [] };
+    }
+    temporaryPolygon = { all_vertex_x: [], all_vertex_y: [] }; // Clear temporary polygon
+    drawPolygon();
+}
+
+function exitEditingMode() {
+    isEditing = false;
+    const editButton = document.getElementById('editButton');
+    editButton.classList.remove('editing');
+}
+
+function exitEditingMode() {
+    isEditing = false;
+    const editButton = document.getElementById('editButton');
+    editButton.classList.remove('editing');
+    svgContainer.classList.add('hidden'); // Hide SVG container
+
+    // Clear SVG container if no polygon exists for the selected image
+    if (!evaluations[selectedImage]?.polygon || evaluations[selectedImage]?.polygon.all_vertex_x.length === 0) {
+        clearPolygons();
+    }
+}
+
+
+function addPoint(event) {
+    const rect = imageDisplayElem.getBoundingClientRect();
+    const imageWidth = imageDisplayElem.naturalWidth;
+    const imageHeight = imageDisplayElem.naturalHeight;
+
+    const scaleX = imageWidth / rect.width;
+    const scaleY = imageHeight / rect.height;
+
+    const x = (event.clientX - rect.left) * scaleX;
+    const y = (event.clientY - rect.top) * scaleY;
+
+    temporaryPolygon.all_vertex_x.push(x);
+    temporaryPolygon.all_vertex_y.push(y);
+
+    drawPolygon();
+}
+
+function savePolygon() {
+    if (!evaluations[selectedImage]) {
+        evaluations[selectedImage] = {};
+    }
+    evaluations[selectedImage].polygon = { ...temporaryPolygon };
+    saveEvaluations(); // Save evaluations to localStorage
+    drawPolygon();
+}
+
+function cancelEditing() {
+    temporaryPolygon = { all_vertex_x: [], all_vertex_y: [] };
+    drawPolygon();
+}
+
+function drawPolygon() {
+    while (svgContainer.firstChild) {
+        svgContainer.removeChild(svgContainer.firstChild);
+    }
+
+    const polygonData = isEditing ? temporaryPolygon : evaluations[selectedImage]?.polygon;
+    if (!polygonData || polygonData.all_vertex_x.length < 1) return;
+
+    const rect = imageDisplayElem.getBoundingClientRect();
+    const imageWidth = imageDisplayElem.naturalWidth;
+    const imageHeight = imageDisplayElem.naturalHeight;
+
+    const scaleX = rect.width / imageWidth;
+    const scaleY = rect.height / imageHeight;
+
+    const scaledPoints = polygonData.all_vertex_x.map((x, i) => ({
+        x: x * scaleX,
+        y: polygonData.all_vertex_y[i] * scaleY
+    }));
+
+    const pointsString = scaledPoints.map(point => `${point.x},${point.y}`).join(" ");
+
+    const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+    polygon.setAttribute("points", pointsString);
+    polygon.setAttribute("stroke", "red");
+    polygon.setAttribute("stroke-width", "2");
+    polygon.setAttribute("fill", "none");
+    svgContainer.appendChild(polygon);
+
+    scaledPoints.forEach(point => {
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", point.x);
+        circle.setAttribute("cy", point.y);
+        circle.setAttribute("r", "4");
+        circle.setAttribute("fill", "blue");
+        svgContainer.appendChild(circle);
+    });
+}
+
+
+// Function to display the selected image
+function displayImage(filename) {
+    console.log("filename: " + filename);
+    selectedImage = filename;
+    const imagePath = `./assets/images/Bones/visualize-bone/${filename}`;
+    const imageDisplayElem = document.getElementById('imageDisplay');
+    imageDisplayElem.src = imagePath;
+    imageDisplayElem.style.display = 'block';
+    if (evaluations[selectedImage] && evaluations[selectedImage].polygon) {
+        temporaryPolygon = { ...evaluations[selectedImage].polygon };
+    } else {
+        temporaryPolygon = { all_vertex_x: [], all_vertex_y: [] };
+    }
+
+    drawPolygon();
+    highlightSelectedImage(filename);
+}
+
+// Function to synchronize canvas width with imageDisplay width
+function synchronizeCanvasWidth() {
+    // Get the computed width of imageDisplay
+    const imageWidth = document.getElementById('imageDisplay').clientWidth;
+
+    // Set canvas width to match imageDisplay width
+    document.getElementById('canvas').setAttribute('width', imageWidth);
+}
+
+// Function to start redrawing the polygon at regular intervals
+function startRedrawing() {
+    // Redraw the polygon initially
+    drawPolygon();
+
+    // Set interval to redraw every 100 milliseconds
+    setInterval(drawPolygon, 100);
+}
+
+updateCounts()
+// Call startRedrawing when you want to start the redrawing process
+startRedrawing();
+
 // Load the file list and evaluations on page load
 window.onload = () => {
     loadFileList();
     loadEvaluations();
+    synchronizeCanvasWidth();
 };
 
 // Add event listeners to the buttons
@@ -337,4 +542,5 @@ resetBtnElem.addEventListener("click", resetEvaluations);
 // Adding event listeners to the document for keydown events
 document.addEventListener("keydown", handleKeyDown);
 
+window.addEventListener('resize', synchronizeCanvasWidth);
 imageZoom("imageDisplay", "myresult");

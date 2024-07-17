@@ -161,8 +161,8 @@ li svg {
 }
 
 .image-wrapper {
-    display: flex;
     position: relative;
+    display: flex;
     margin-top: 52px;
     align-self: stretch;
     width: 100%;
@@ -174,19 +174,23 @@ li svg {
 
 
 #imageDisplay {
-    display: flex;
 
+    position: absolute;
+    /* Position the image absolutely within the wrapper */
+    top: 0;
+    left: 0;
+
+    display: flex;
     width: auto;
     height: 60vh;
     max-height: 60vh;
     max-width: 100%;
-
     object-fit: contain;
     object-position: center;
     transition: transform 0.3s ease;
     user-select: none;
     cursor: zoom-in;
-    z-index: 111111;
+    z-index: 111;
 }
 
 .svg-container {
@@ -194,8 +198,10 @@ li svg {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    z-index: 1111128;
+    height: 60vh;
+    max-height: 60vh;
+    max-width: 100%;
+    z-index: 100000;
     /* Ensure polygons are above image */
 }
 
@@ -249,4 +255,8 @@ li svg {
     align-items: stretch;
     flex-direction: row;
     gap: 10px;
+}
+
+.hidden {
+    /* display: none; */
 }

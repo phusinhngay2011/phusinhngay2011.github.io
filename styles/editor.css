@@ -22,12 +22,12 @@
     color: var(--fourth-color);
 }
 
-.edit-btn:hover {
+.editing, .edit-btn:hover {
     background-color: var(--fourth-color);
     color: var(--first-color);
 }
 
-.edit-btn:hover * {
-    stroke: var(--first-color);
+.editing *, .edit-btn:hover * {
     stroke: var(--first-color);
 }
+
