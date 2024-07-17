@@ -142,18 +142,19 @@ li svg {
 }
 
 .img-zoom-result {
-    position: fixed !important;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 340px !important;
-    height: 340px !important;
-    border: 1px solid var(--fourth-color);
+    width: 340px;
+    height: 340px;
     border-bottom-right-radius: 6px;
     z-index: 1000;
     display: none;
+    object-fit: contain;
+    object-position: center;
 }
 
-.images-viewer__container__viewer__img-container img {
+#imageDisplay {
     display: block;
     position: absolute;
     top: 0;
