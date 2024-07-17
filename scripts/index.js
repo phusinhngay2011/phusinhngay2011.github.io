@@ -9,6 +9,8 @@ const numberOfImagesElem = document.getElementById("numberOfImages");
 
 const prevImageBtnElem = document.getElementById("prevImageBtn");
 const nextImageBtnElem = document.getElementById("nextImageBtn");
+const firstImageBtnElem = document.getElementById("goToFirstImage");
+const lastImageBtnElem = document.getElementById("goToLastImage");
 
 const trueBtnElem = document.getElementById("trueBtn");
 const falseBtnElem = document.getElementById("falseBtn");
@@ -19,8 +21,12 @@ const trueCountElem = document.getElementById("trueCount");
 const falseCountElem = document.getElementById("falseCount");
 const unEvaluatedCountElem = document.getElementById("unEvaluatedCount");
 
+const editBtnElem = document.getElementById("edit");
+const eraseBtnElem = document.getElementById("erase");
+
 var images = [];
 var selectedImage = "";
+var evaluations = {}; // Object to store evaluations
 var evaluations = {}; // Object to store evaluations
 
 // Load evaluations from localStorage
@@ -77,6 +83,27 @@ function showNextImage() {
     const currentIndex = getCurrentImageIndex();
     if (currentIndex < images.length - 1) {
         displayImage(images[currentIndex + 1]);
+    }
+}
+
+// Function to show the previous image
+function showFirstImage() {
+    console.log('Go to first image', images[0]);
+    displayImage(images[0]);
+}
+
+// Function to show the next image
+function showLastImage() {
+    console.log('Go to first image', images[images.length - 1]);
+    displayImage(images[images.length - 1]);
+}
+
+// Function to handle keydown events
+function handleKeyDown(event) {
+    if (event.key === "ArrowLeft") {
+        showPrevImage();
+    } else if (event.key === "ArrowRight") {
+        showNextImage();
     }
 }
 
@@ -242,11 +269,13 @@ function imageZoom(imgID, resultID) {
 
     imageDisplayElem.addEventListener("mouseenter", () => {
         document.getElementById('myresult').style.display = 'block';
-        console.log('in');
+        document.getElementById('myresult').style.zIndex = '100000';
+        document.getElementById('myresult').style.opacity = '1';
     });
     imageDisplayElem.addEventListener("mouseleave", () => {
         document.getElementById('myresult').style.display = 'none';
-        console.log('out');
+        document.getElementById('myresult').style.zIndex = '-10';
+        document.getElementById('myresult').style.opacity = '0';
     });
 
     function moveLens(e) {
@@ -296,6 +325,8 @@ window.onload = () => {
 // Add event listeners to the buttons
 prevImageBtnElem.addEventListener("click", showPrevImage);
 nextImageBtnElem.addEventListener("click", showNextImage);
+firstImageBtnElem.addEventListener("click", showFirstImage);
+lastImageBtnElem.addEventListener("click", showLastImage);
 
 // Add event listeners to the buttons
 trueBtnElem.addEventListener("click", () => evaluateImage("True"));
@@ -303,6 +334,7 @@ falseBtnElem.addEventListener("click", () => evaluateImage("False"));
 downloadBtnElem.addEventListener("click", downloadEvaluations);
 resetBtnElem.addEventListener("click", resetEvaluations);
 
-imageZoom("imageDisplay", "myresult");
+// Adding event listeners to the document for keydown events
+document.addEventListener("keydown", handleKeyDown);
 
-console.log("imageDisplayElem.src: ", imageDisplayElem.src)
+imageZoom("imageDisplay", "myresult");

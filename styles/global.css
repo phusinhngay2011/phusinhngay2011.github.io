@@ -103,6 +103,7 @@ section {
 }
 
 body {
+    z-index: 0;
     line-height: 1;
     height: 100%;
 }

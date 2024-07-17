@@ -1,0 +1,33 @@
+.editor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    justify-content: flex-end;
+    padding: 6px 12px;
+    border: 3px solid var(--third-color);
+    border-bottom: none;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.editor>* {
+    transition: all 0.2s ease-in-out;
+    padding: 6px;
+    border-radius: 6px;
+    color: var(--fourth-color);
+}
+
+.edit-btn:hover {
+    background-color: var(--fourth-color);
+    color: var(--first-color);
+}
+
+.edit-btn:hover * {
+    stroke: var(--first-color);
+    stroke: var(--first-color);
+}

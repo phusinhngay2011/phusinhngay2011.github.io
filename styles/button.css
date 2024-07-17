@@ -53,12 +53,12 @@
 
 .button-false *,
 .button-true * {
-    color: var(--fourth-color);
+    color: white;
 }
 
 .button-false {
     background: #F04438;
-    color: var(--fourth-color);
+    color: white;
     border-color: #D92D20;
 }
 
@@ -66,7 +66,7 @@
 .button-false:focus {
     border-color: #D92D20;
     box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
-    color: var(--fourth-color);
+    color: white;
 }
 
 .button-false:active {
@@ -79,7 +79,7 @@
 
 .button-true {
     background: #17B26A;
-    color: var(--fourth-color);
+    color: white;
     border-color: #079455;
 }
 
