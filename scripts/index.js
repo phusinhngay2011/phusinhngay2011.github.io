@@ -106,9 +106,9 @@ function showLastImage() {
 
 // Function to handle keydown events
 function handleKeyDown(event) {
-    if (event.key === "ArrowLeft") {
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
         showPrevImage();
-    } else if (event.key === "ArrowRight") {
+    } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
         showNextImage();
     }
 }
