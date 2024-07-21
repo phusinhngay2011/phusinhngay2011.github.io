@@ -36,4 +36,9 @@
 .hightlight_text {
     font-weight: 700;
     color: #42307D;
+
+}
+
+.hightlight_text *{
+    stroke: #42307D;
 }

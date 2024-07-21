@@ -24,6 +24,9 @@ const unEvaluatedCountElem = document.getElementById("unEvaluatedCount");
 const editBtnElem = document.getElementById("editButton");
 const eraseBtnElem = document.getElementById("eraseButton");
 
+const positionElem = document.getElementById("imagePosition");
+const diseaseElem = document.getElementById("imageDiagnose");
+
 var images = [];
 var imagesWithInfo = [];
 var selectedImage = "";
@@ -106,9 +109,9 @@ function showLastImage() {
 
 // Function to handle keydown events
 function handleKeyDown(event) {
-    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp" || event.key === "a") {
         showPrevImage();
-    } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+    } else if (event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === "d") {
         showNextImage();
     }
 }
@@ -119,14 +122,13 @@ function loadFileList() {
         .then((response) => response.json())
         .then((data) => {
             data.images.forEach((imageData, idx) => {
-                const { filename, width, height } = imageData;
-                imagesWithInfo.push({ filename, width, height }); // Store filename, width, and height
+                const { filename, width, height, position, disease } = imageData;
+                imagesWithInfo.push({ filename, width, height, position, disease }); // Store filename, width, and height
                 images.push(filename);
 
                 if (!selectedImage) {
                     selectedImage = filename;
                 }
-                console.log(selectedImage);
                 const listItem = document.createElement("li");
                 listItem.textContent = filename;
                 listItem.id = `img-${filename}`;
@@ -187,12 +189,29 @@ function createFalseSVG() {
     return svg;
 }
 
+function createEditSVG() {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "24");
+    svg.setAttribute("height", "24");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("class", "edit-svg");
+    svg.innerHTML = `
+        <path d="M19 10V4M16 7H22M16 21V19.8C16 18.1198 16 17.2798 15.673 16.638C15.3854 16.0735 14.9265 15.6146 14.362 15.327C13.7202 15 12.8802 15 11.2 15H6.8C5.11984 15 4.27976 15 3.63803 15.327C3.07354 15.6146 2.6146 16.0735 2.32698 16.638C2 17.2798 2 18.1198 2 19.8V21M12.5 7.5C12.5 9.433 10.933 11 9 11C7.067 11 5.5 9.433 5.5 7.5C5.5 5.567 7.067 4 9 4C10.933 4 12.5 5.567 12.5 7.5Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    `;
+    return svg;
+}
+
+
 // Function to update the SVG icons based on evaluation
 function updateEvaluationsIcons() {
     const listItems = fileListElem.querySelectorAll("li");
     listItems.forEach((item) => {
         const filename = item.textContent.trim();
         item.innerHTML = filename; // Reset innerHTML to remove old icons
+        if (evaluations[filename] && evaluations[filename].polygon) {
+            item.appendChild(createEditSVG());
+        }
         if (evaluations[filename] && evaluations[filename].good) {
             if (evaluations[filename].good === "True") {
                 item.appendChild(createTrueSVG());
@@ -333,6 +352,7 @@ document.getElementById('editButton').addEventListener('click', function () {
 document.getElementById('eraseButton').addEventListener('click', function () {
     clearPolygons();
     exitEditingMode();
+    document.getElementById('notif').classList.remove('show');
 });
 
 svgContainer.addEventListener('click', function (event) {
@@ -342,6 +362,17 @@ svgContainer.addEventListener('click', function (event) {
 });
 
 document.addEventListener('keydown', function (event) {
+
+    if (event.key === 'e') {
+        savePolygon()
+        toggleEditing();
+    }
+    if (event.key === 'r') {
+        clearPolygons();
+        exitEditingMode();
+        document.getElementById('notif').classList.remove('show');
+    }
+
     if (isEditing) {
         if (event.key === 'Enter') {
             savePolygon();
@@ -359,11 +390,13 @@ function toggleEditing() {
     const editButton = document.getElementById('editButton');
     if (isEditing) {
         editButton.classList.add('editing');
+        document.getElementById('notif').classList.add('show');
         temporaryPolygon = evaluations[selectedImage]?.polygon
             ? { ...evaluations[selectedImage].polygon }
             : { all_vertex_x: [], all_vertex_y: [] }; // Load existing polygon or create new
         enableDrawing();
     } else {
+        document.getElementById('notif').classList.remove('show');
         editButton.classList.remove('editing');
         disableDrawing();
     }
@@ -482,12 +515,28 @@ function drawPolygon() {
 
 // Function to display the selected image
 function displayImage(filename) {
-    console.log("filename: " + filename);
+    // console.log("filename: " + filename);
     selectedImage = filename;
     const imagePath = `./assets/images/Bones/visualize-bone/${filename}`;
     const imageDisplayElem = document.getElementById('imageDisplay');
     imageDisplayElem.src = imagePath;
     imageDisplayElem.style.display = 'block';
+
+    const info = imagesWithInfo.find((item) => item.filename === selectedImage);
+    positionElem.innerHTML = "";
+    const posElem = document.createElement('div');
+    posElem.className = 'badge';
+    posElem.textContent = info.position;
+    positionElem.appendChild(posElem)
+
+    diseaseElem.innerHTML = "";
+    info.disease.forEach((item) => {
+        const disElem = document.createElement('div');
+        disElem.className = 'badge';
+        disElem.textContent = item;
+        diseaseElem.appendChild(disElem)
+    });
+    
     if (evaluations[selectedImage] && evaluations[selectedImage].polygon) {
         temporaryPolygon = { ...evaluations[selectedImage].polygon };
     } else {

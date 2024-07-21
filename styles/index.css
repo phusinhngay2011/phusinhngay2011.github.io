@@ -15,7 +15,7 @@
 
 .images-viewer__list {
     position: absolute;
-    bottom: 5%;
+    bottom: 0;
     top: 0;
     display: flex;
     flex-direction: column;
@@ -25,7 +25,6 @@
         0px 20px 24px -4px rgba(16, 24, 40, 0.08);
     border: 1px solid var(--second-color);
     border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
     padding: 6px 12px;
 }
 
@@ -78,12 +77,18 @@
     display: flex;
     align-items: center;
     justify-items: flex-end;
+    position: relative;
 }
 
-li svg {
+li svg:first-child {
     display: flex;
     align-self: flex-end;
     margin-left: auto;
+    margin-right: 8px;
+}
+ 
+li:hover .edit-svg * {
+    stroke: var(--fourth-color);
 }
 
 .images-viewer__list__container ul>li:hover {
@@ -94,6 +99,10 @@ li svg {
 .selected {
     background-color: var(--first-color);
     color: var(--fourth-color);
+}
+
+.selected .edit-svg *{
+    stroke: var(--fourth-color);
 }
 
 .images-viewer__container {
@@ -118,8 +127,8 @@ li svg {
 
 .images-viewer__container__viewer__img-container {
     position: relative;
-    flex: 0.85;
-    max-height: 85%;
+    flex: 0.95;
+    max-height: 95%;
     flex: 1;
     display: flex;
     align-self: stretch;
@@ -133,10 +142,13 @@ li svg {
 }
 
 .controller {
-    flex: 0.15;
+    flex: 0.05;
     position: relative;
 }
 
+.controller button {
+    max-height: 45px;
+}
 .img-zoom-lens {
     position: absolute;
     /*set the size of the lens:*/
@@ -172,6 +184,22 @@ li svg {
     justify-content: center;
 }
 
+.image-title {
+    position: absolute;
+    display: flex;
+    align-self: stretch;
+    flex-direction: row;
+    bottom: 8px;
+    padding-left: 16px;
+    left: 0;
+    right: 0;
+    gap: 1rem;
+}
+
+.image-title span {
+    font-size: 18px;
+    color: var(--fourth-color)
+}
 
 #imageDisplay {
 
@@ -259,4 +287,33 @@ li svg {
 
 .hidden {
     /* display: none; */
+}
+
+
+.notification {
+    position: fixed;
+    right: -272px;
+    top: 0;
+    border-bottom-left-radius: 16px;
+    background-color: var(--third-color);
+    color: var(--fourth-color);
+    padding: 16px;
+    transition: all 0.2s ease-out;
+    transform: translateX(0);
+    box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03),
+        0px 20px 24px -4px rgba(16, 24, 40, 0.08);
+}
+
+.notification.show {
+    display: flex;
+    transition: all 0.2s ease-out;
+    transform: translateX(-100%);
+}
+
+#imageDiagnose, #imagePosition{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    margin-bottom: 10px;
 }
