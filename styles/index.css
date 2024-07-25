@@ -86,7 +86,7 @@ li svg:first-child {
     margin-left: auto;
     margin-right: 8px;
 }
- 
+
 li:hover .edit-svg * {
     stroke: var(--fourth-color);
 }
@@ -101,7 +101,7 @@ li:hover .edit-svg * {
     color: var(--fourth-color);
 }
 
-.selected .edit-svg *{
+.selected .edit-svg * {
     stroke: var(--fourth-color);
 }
 
@@ -149,6 +149,7 @@ li:hover .edit-svg * {
 .controller button {
     max-height: 45px;
 }
+
 .img-zoom-lens {
     position: absolute;
     /*set the size of the lens:*/
@@ -310,10 +311,26 @@ li:hover .edit-svg * {
     transform: translateX(-100%);
 }
 
-#imageDiagnose, #imagePosition{
+#imageDiagnose,
+#imagePosition {
     display: flex;
     gap: 10px;
     align-items: center;
 
     margin-bottom: 10px;
 }
+
+.upload-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+#fileInput{
+    display: none;
+}
+

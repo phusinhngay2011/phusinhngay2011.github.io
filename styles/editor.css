@@ -7,7 +7,6 @@
     display: flex;
     flex-direction: row;
     gap: 6px;
-    justify-content: flex-end;
     padding: 6px 12px;
     border: 3px solid var(--third-color);
     border-bottom: none;
@@ -21,13 +20,42 @@
     border-radius: 6px;
     color: var(--fourth-color);
 }
-
-.editing, .edit-btn:hover {
+.edit-btn {
+    margin-left: auto;
+    align-self: flex-end;
+}
+.edit-btn:last-child {
+    margin-left: 0;
+}
+.editing,
+.edit-btn:hover {
     background-color: var(--fourth-color);
     color: var(--first-color);
 }
 
-.editing *, .edit-btn:hover * {
+.editing *,
+.edit-btn:hover * {
     stroke: var(--first-color);
 }
 
+.legend-container { 
+    max-height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-container span{
+    color: var(--fourth-color);
+    font-weight: 500;
+}
+.legend {
+    max-height: 52px;
+    width: 100px !important;
+    width: auto;
+    object-fit: contain;
+    object-position: center;
+    display: flex;
+    align-self: flex-start;
+    margin-right: auto;
+}

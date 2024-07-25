@@ -536,7 +536,7 @@ function displayImage(filename) {
         disElem.textContent = item;
         diseaseElem.appendChild(disElem)
     });
-    
+
     if (evaluations[selectedImage] && evaluations[selectedImage].polygon) {
         temporaryPolygon = { ...evaluations[selectedImage].polygon };
     } else {
@@ -569,6 +569,33 @@ updateCounts()
 // Call startRedrawing when you want to start the redrawing process
 startRedrawing();
 
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const json = JSON.parse(e.target.result);
+                console.log(json);
+                evaluations = json;
+                saveEvaluations();
+                updateCounts();
+                updateEvaluationsIcons();
+                updateNumberOfImages();
+                // Process the JSON data here
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+            }
+        };
+        reader.onerror = function () {
+            console.error('Error reading file:', reader.error);
+        };
+        reader.readAsText(file);
+    } else {
+        console.log('No file selected');
+    }
+}
+
 // Load the file list and evaluations on page load
 window.onload = () => {
     loadFileList();
@@ -587,6 +614,15 @@ trueBtnElem.addEventListener("click", () => evaluateImage("True"));
 falseBtnElem.addEventListener("click", () => evaluateImage("False"));
 downloadBtnElem.addEventListener("click", downloadEvaluations);
 resetBtnElem.addEventListener("click", resetEvaluations);
+
+document.getElementById('uploadButton').addEventListener('click', function () {
+    const userConfirmed = confirm('Bạn có chắc chắn tải file trước đó lên không, việc này sẽ ghi đè và xóa dữ liệu trước đó');
+    if (userConfirmed) {
+        document.getElementById('fileInput').click();
+    }
+});
+
+document.getElementById('fileInput').addEventListener('change', handleFileUpload);
 
 // Adding event listeners to the document for keydown events
 document.addEventListener("keydown", handleKeyDown);
